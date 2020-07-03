@@ -1,20 +1,16 @@
 package com.stanbic.customerapi.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
+
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.CreationTimestamp;
@@ -51,9 +47,9 @@ public class Customer {
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date createdAt;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "customer_id", referencedColumnName = "id")
-   List<Account> comments = new ArrayList<>();
+	// @OneToMany(cascade = CascadeType.ALL)
+	// @JoinColumn(name = "customer_id", referencedColumnName = "id")
+   // List<Account> accounts = new ArrayList<>();
 
 
    // Methods
@@ -106,21 +102,14 @@ public class Customer {
       this.createdAt = createdAt;
    }
 
-   public List<Account> getComments() {
-      return this.comments;
-   }
-
-   public void setComments(List<Account> comments) {
-      this.comments = comments;
-   }
 
 
-   public Customer(String name, String email, String phoneNumber, Date dateOfBirth, List<Account> comments) {
+   public Customer(String name, String email, String phoneNumber, Date dateOfBirth) {
       this.name = name;
       this.email = email;
       this.phoneNumber = phoneNumber;
       this.dateOfBirth = dateOfBirth;
-      this.comments = comments;
+      
    }
    
 

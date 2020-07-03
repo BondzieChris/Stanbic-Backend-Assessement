@@ -53,7 +53,11 @@ public class CustomerController {
     Customer existingCustomer = this.modelRepo.findById(id)
            .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id :" + id));
    //    existingCustomer.setFirstName(user.getFirstName());
-        return existingCustomer;
+            existingCustomer.setName(user.getName());
+            existingCustomer.setDateOfBirth(user.getDateOfBirth());
+            existingCustomer.setEmail(user.getEmail());
+            existingCustomer.setPhoneNumber(user.getPhoneNumber());
+            return this.modelRepo.save(existingCustomer);
    }
 
    // delete user by id
