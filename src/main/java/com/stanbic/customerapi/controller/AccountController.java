@@ -5,7 +5,10 @@ import javax.validation.Valid;
 
 import com.stanbic.customerapi.exception.ResourceNotFoundException;
 import com.stanbic.customerapi.model.Account;
+import com.stanbic.customerapi.model.Customer;
 import com.stanbic.customerapi.repository.AccountRepository;
+import com.stanbic.customerapi.repository.CustomerRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,12 +27,18 @@ public class AccountController {
    @Autowired
    private AccountRepository modelRepo;
 
+   @Autowired
+   private CustomerRepository customerRepo;
 
-   // get all accounts
-   @GetMapping(value = "")
+//    get all accounts
+   @GetMapping
    public List<Account> getAllAccounts() {
+        
        return this.modelRepo.findAll();
    }
+
+
+   
 
    // get account by id
    @GetMapping(value = "/{id}")
@@ -48,6 +57,20 @@ public class AccountController {
         account.setAccountNumber(accnumber); 
         return this.modelRepo.save(account);
    }
+
+   //   Create account for existing customer
+   @PostMapping("/customer/{id}")
+   public Account addAccountToCustomer(@Valid @RequestBody Account account, @PathVariable (value = "id") long id) {
+            Date date = new Date();
+            long accnumber = date.getTime();
+            Customer customer =  this.customerRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer with id:"+ id +" cannot be found" ));
+            account.setAccountNumber(accnumber);
+            account.setCustomer(customer);
+
+         return this.modelRepo.save(account);
+
+   }
+   
 
    // update account
    @PutMapping(value = "/{id}")
@@ -71,7 +94,7 @@ public class AccountController {
        return ResponseEntity.ok().build();
    }
 
-   // get account by accountNumber
+   // GET account by accountNumber
    @GetMapping("/number/{accnumber}")
    public Account getAccountByAccNumber(@PathVariable (value = "accnumber") long accnumber) {
 
@@ -79,6 +102,8 @@ public class AccountController {
       
    }
    
+
+
 
 
 

@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -49,6 +50,7 @@ public class Account {
 
    @ManyToOne
    @JoinColumn(name = "customer_id",referencedColumnName = "id")
+   @JsonIgnoreProperties(value = {"accounts"})
    private Customer customer;
 
    
@@ -97,12 +99,10 @@ public class Account {
 
     public Account() {
     }
-
-    public Account(double openingAmount, double currentBalance, Customer customer) {
+   
+    public Account(double openingAmount, double currentBalance) {
         this.openingAmount = openingAmount;
         this.currentBalance = currentBalance;
-        this.customer = customer;
     }
-   
 
 }
