@@ -15,40 +15,46 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stanbic.customerapi.model.Account;
 import com.stanbic.customerapi.model.Customer;
 import com.stanbic.customerapi.exception.ResourceNotFoundException;
 import com.stanbic.customerapi.repository.CustomerRepository;
 
 @RestController
-@RequestMapping("api/v1/customers")
-//@CrossOrigin("http:://localhost")
+@RequestMapping(value = "api/v1/customers")
 public class CustomerController {
 
    @Autowired
    private CustomerRepository modelRepo;
 
-   // get all users
+   // get all users              ques2
    @GetMapping
    public List<Customer> getAllCustomers() {
        return this.modelRepo.findAll();
    }
 
-   // get user by id
-   @GetMapping("/{id}")
-   public Customer getCustomerById(@PathVariable (value = "id") long id) {
-       return this.modelRepo.findById(id)
-       .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id :" + id));
+   // get user by id             ques4
+   @GetMapping("/{value}")
+   public Customer getCustomerEmail(@PathVariable(name = "value") String value) {
+
+       Customer customer = this.modelRepo.findByEmail(value);
+
+       if(customer == null){
+            customer = this.modelRepo.findByPhoneNumber(value);
+       }
+
+       return customer;
    }
 
-   // create user
+   // create user               ques1
    @PostMapping
    public Customer createCustomer(@Valid @RequestBody Customer user) {
        return this.modelRepo.save(user);
    }
 
-   // update user
+   // update user               ques5
    @PutMapping("/{id}")
-   public Customer updateCustomer(@Valid @RequestBody Customer user, @PathVariable ("id") long id) {
+   public Customer updateCustomer(@Valid @RequestBody Customer user, @PathVariable("id") long id) {
        
     Customer existingCustomer = this.modelRepo.findById(id)
            .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id :" + id));
@@ -62,10 +68,29 @@ public class CustomerController {
 
    // delete user by id
    @DeleteMapping("/{id}")
-   public ResponseEntity<Customer> deleteCustomer(@PathVariable ("id") long id){
+   public ResponseEntity<Customer> deleteCustomer(@PathVariable(name = "id") long id){
+
        Customer existingCustomer = this.modelRepo.findById(id)
            .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id :" + id));
+           
        this.modelRepo.delete(existingCustomer);
        return ResponseEntity.ok().build();
    }
+   //END OF BASIC CRUD
+
+
+
+   @GetMapping(value = "/{id}/accounts")
+   public List<Account> getCustomerAccounts(@PathVariable(name = "value") String value) {
+
+    Customer customer = this.modelRepo.findByEmail(value);
+
+    if(customer == null){
+         customer = this.modelRepo.findByPhoneNumber(value);
+    }
+
+        return customer.getAccounts();
+    
+   }
+
 }

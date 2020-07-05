@@ -1,18 +1,22 @@
 package com.stanbic.customerapi.model;
 
+import java.sql.Date;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-
-import java.sql.Date;
-
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import org.hibernate.annotations.CreationTimestamp;
 
 // validation
@@ -36,7 +40,8 @@ public class Customer {
 	private String email;
 
 	@Column(name = "phone_number", unique = true)
-	@NotNull(message = "Please enter your email")
+   @NotNull(message = "Please enter your email")
+   @Size(min = 10)
 	private String phoneNumber;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
@@ -47,12 +52,11 @@ public class Customer {
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date createdAt;
 
-	// @OneToMany(cascade = CascadeType.ALL)
-	// @JoinColumn(name = "customer_id", referencedColumnName = "id")
-   // List<Account> accounts = new ArrayList<>();
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+   List<Account> accounts;
 
 
-   // Methods
+   // METHODS
 
    public long getId() {
       return this.id;
@@ -102,6 +106,15 @@ public class Customer {
       this.createdAt = createdAt;
    }
 
+   
+
+   public List<Account> getAccounts() {
+      return this.accounts;
+   }
+
+   public void setAccounts(List<Account> accounts) {
+      this.accounts = accounts;
+   }
 
 
    public Customer(String name, String email, String phoneNumber, Date dateOfBirth) {
@@ -109,7 +122,6 @@ public class Customer {
       this.email = email;
       this.phoneNumber = phoneNumber;
       this.dateOfBirth = dateOfBirth;
-      
    }
    
 
