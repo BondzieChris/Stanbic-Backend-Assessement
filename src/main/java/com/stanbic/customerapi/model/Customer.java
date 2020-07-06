@@ -17,8 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 // validation
@@ -54,8 +53,8 @@ public class Customer {
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date createdAt;
 
-   @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-   @JsonIgnoreProperties(value = {"customer"})
+   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+   @JsonIgnore
    List<Account> accounts;
 
 

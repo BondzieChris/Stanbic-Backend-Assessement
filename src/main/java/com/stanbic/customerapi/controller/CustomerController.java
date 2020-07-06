@@ -27,13 +27,13 @@ public class CustomerController {
    @Autowired
    private CustomerRepository modelRepo;
 
-   // get all users              ques2
+   // 3. 	Retrieve all customers (5 points)
    @GetMapping
    public List<Customer> getAllCustomers() {
        return this.modelRepo.findAll();
    }
 
-   // get user by id             ques4
+   // 4. 	Retrieve a customer’s info by Email or phone number (3 points)
    @GetMapping("/{value}")
    public Customer getCustomerEmail(@PathVariable(name = "value") String value) {
 
@@ -46,13 +46,13 @@ public class CustomerController {
        return customer;
    }
 
-   // create user               ques1
+   // 1. 	Add a new customer (2 points)
    @PostMapping
    public Customer createCustomer(@Valid @RequestBody Customer user) {
        return this.modelRepo.save(user);
    }
 
-   // update user               ques5
+   // 5. 	Update Customer info (2 points)
    @PutMapping("/{id}")
    public Customer updateCustomer(@Valid @RequestBody Customer user, @PathVariable("id") long id) {
        
@@ -79,8 +79,8 @@ public class CustomerController {
    //END OF BASIC CRUD
 
 
-
-   @GetMapping(value = "/{id}/accounts")
+//    7. 	Retrieve all accounts of a customer using email or phone number. (5 points)
+   @GetMapping(value = "/{value}/accounts")
    public List<Account> getCustomerAccounts(@PathVariable(name = "value") String value) {
 
     Customer customer = this.modelRepo.findByEmail(value);

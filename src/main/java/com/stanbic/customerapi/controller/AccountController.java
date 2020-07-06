@@ -58,7 +58,7 @@ public class AccountController {
         return this.modelRepo.save(account);
    }
 
-   //   Create account for existing customer
+   //  6. 	Add a new account to an existing customer (3 points)
    @PostMapping("/customer/{id}")
    public Account addAccountToCustomer(@Valid @RequestBody Account account, @PathVariable (value = "id") long id) {
             Date date = new Date();
@@ -94,7 +94,7 @@ public class AccountController {
        return ResponseEntity.ok().build();
    }
 
-   // GET account by accountNumber
+   // GET account by accountNumber   
    @GetMapping("/number/{accnumber}")
    public Account getAccountByAccNumber(@PathVariable (value = "accnumber") long accnumber) {
 
@@ -102,6 +102,7 @@ public class AccountController {
       
    }
    
+
 
 
 
