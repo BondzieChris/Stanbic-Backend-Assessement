@@ -21,41 +21,52 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 // validation
 
 @Entity
 @Table(name = "customers")
+@ApiModel(description = "All details about a Customer")
 public class Customer {
 
    	// Fields
-	@Id
+   @Id
+   @ApiModelProperty(notes = "The database generated customer ID")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long id;
 	
 	
-	@NotNull
+   @NotNull
+   @ApiModelProperty(notes = "The Name of Customer")
 	private String name;
 	
 	@Column( unique = true)
 	@Email
    @NotNull(message = "Please enter your email")
+   @ApiModelProperty(notes = "The email of Customer")
 	private String email;
 
 	@Column(name = "phone_number", unique = true)
    @NotNull(message = "Please enter your email")
    @Size(min = 10)
+   @ApiModelProperty(notes = "The Customer's phone number")
 	private String phoneNumber;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
    @NotNull(message = "Date of Birth is required")
+   @ApiModelProperty(notes = "The Customer's Date of Birth")
    private Date dateOfBirth;
    
    @CreationTimestamp
-	@JsonFormat(pattern = "yyyy-MM-dd")
+   @JsonFormat(pattern = "yyyy-MM-dd")
+   @ApiModelProperty(notes = "The Date Customer was added")
 	private Date createdAt;
 
    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
    @JsonIgnore
+   @ApiModelProperty(notes = "Auto-filled customers relationship with accounts")
    List<Account> accounts;
 
 

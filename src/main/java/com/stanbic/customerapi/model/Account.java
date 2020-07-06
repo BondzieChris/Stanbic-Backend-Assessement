@@ -18,12 +18,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "accounts")
+@ApiModel(description = "All details about an account")
 public class Account {
 
 // FIELDS
     @Id
+    @ApiModelProperty(notes = "The database generated customer ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
@@ -36,22 +41,27 @@ public class Account {
     }
 
     @Column(unique = true)
+    @ApiModelProperty(notes = "Unique account numbers")
     private long accountNumber;
 
     @NotNull(message = "Please Enter opening amount")
+    @ApiModelProperty(notes = "Amount used to open account")
     private double openingAmount;
 
     @NotNull(message = "Please Enter current balance")
+    @ApiModelProperty(notes = "Current balance of account")
     private double currentBalance;
 
      // @CreationTimestamp is for auto filled
    @CreationTimestamp
    @JsonFormat(pattern = "yyyy-MM-dd")
+   @ApiModelProperty(notes = "auto filled time account was created")
    private Date createdAt;
 
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "customer_id",referencedColumnName = "id")
    @JsonIgnore
+   @ApiModelProperty(notes = "Auto filled relationship of account to customers")
    private Customer customer;
 
    

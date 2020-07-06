@@ -11,15 +11,19 @@ import com.stanbic.customerapi.repository.CustomerRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @RequestMapping(value = "api/v1/accounts")
+@Api(value = "Account API", description = "Handles accounts operations")
 public class AccountController {
 
    @Autowired
@@ -59,7 +63,8 @@ public class AccountController {
 
    //  6. 	Add a new account to an existing customer (3 points)
    @PostMapping("/customer/{id}")
-   public Account addAccountToCustomer(@Valid @RequestBody Account account, @PathVariable (value = "id") long id) {
+   @ApiOperation(value = "Add a new account to an existing customer")
+   public Account addAccountToCustomer(@ApiParam(value = "Account object") @Valid @RequestBody Account account, @ApiParam(value = "ID of Customer") @PathVariable (value = "id") long id) {
             Date date = new Date();
             long accnumber = date.getTime();
             Customer customer =  this.customerRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer with id:"+ id +" cannot be found" ));
@@ -86,7 +91,8 @@ public class AccountController {
 
    // 8. 	Delete an account by account number (2 points)
    @DeleteMapping(value = "/{acc}")
-   public String deleteAccountWithNumber(@PathVariable ("acc") long acc){
+   @ApiOperation(value = "Delete an account by account number")
+   public String deleteAccountWithNumber(@ApiParam(value = "account number") @PathVariable ("acc") long acc){
 
        Account existingAccount = this.modelRepo.findByAccountNumber(acc);
        this.modelRepo.delete(existingAccount);
@@ -94,12 +100,11 @@ public class AccountController {
    }
 
    // GET account by accountNumber   
-   @GetMapping("/number/{accnumber}")
-   public Account getAccountByAccNumber(@PathVariable (value = "accnumber") long accnumber) {
-
-      return this.modelRepo.findByAccountNumber(accnumber);
+   // @GetMapping("/number/{accnumber}")
+   // public Account getAccountByAccNumber(@PathVariable (value = "accnumber") long accnumber) {
+   //    return this.modelRepo.findByAccountNumber(accnumber);
       
-   }
+   // }
    
 
 
