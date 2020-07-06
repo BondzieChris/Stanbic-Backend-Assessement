@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -50,7 +49,7 @@ public class Account {
    @JsonFormat(pattern = "yyyy-MM-dd")
    private Date createdAt;
 
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "customer_id",referencedColumnName = "id")
    @JsonIgnore
    private Customer customer;
