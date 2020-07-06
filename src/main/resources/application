@@ -6,3 +6,7 @@ spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5InnoDBDial
 #spring.jpa.show-sql=true
 debug=true
 server.port=3000
+
+twilio.account_sid= ACfed0860440da307791ffe180f3af35ed
+twilio.auth_token = 12d477e0f41e85aad8115e64a85d18f1
+twilio.trial_number = +15412503715

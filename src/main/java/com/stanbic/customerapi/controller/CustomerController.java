@@ -8,6 +8,8 @@ import com.stanbic.customerapi.exception.ResourceNotFoundException;
 import com.stanbic.customerapi.model.Account;
 import com.stanbic.customerapi.model.Customer;
 import com.stanbic.customerapi.repository.CustomerRepository;
+import com.stanbic.customerapi.twilio.SmsRequest;
+import com.stanbic.customerapi.twilio.SmsSender;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,10 +32,14 @@ import io.swagger.annotations.ApiResponse;
 @RestController
 @RequestMapping(value = "api/v1/customers")
 @Api(value="Customers API section", description="Section for handler actions of customers")
-public class CustomerController {
+public class CustomerController implements SmsSender {
+
 
    @Autowired
    private CustomerRepository modelRepo;
+
+   @Autowired
+   private SmsSender smsSender;
 
    // 3. 	Retrieve all customers (5 points)
    @GetMapping
@@ -64,10 +70,15 @@ public class CustomerController {
    }
 
 
-   // 1. 	Add a new customer (2 points)
+   // 1. 	Add a new customer (2 points) 
    @PostMapping
    @ApiOperation(value = "Add a new Customer")
    public Customer createCustomer( @ApiParam(value = "Customer object store in database table", required = true) @Valid @RequestBody Customer customer) {
+
+    // SMS with twilio. Only verifies numbers will receivce SMS becuase the twilio account is free
+       SmsRequest smsRequest = new SmsRequest(customer.getPhoneNumber(), "Congratulation!! You are now a client of Stanbic Bank");
+       this.sendSms(smsRequest);
+       
        return this.modelRepo.save(customer);
    }
 
@@ -83,6 +94,9 @@ public class CustomerController {
             existingCustomer.setDateOfBirth(customer.getDateOfBirth());
             existingCustomer.setEmail(customer.getEmail());
             existingCustomer.setPhoneNumber(customer.getPhoneNumber());
+
+            SmsRequest smsRequest = new SmsRequest(existingCustomer.getPhoneNumber(), "You information at Stanbic has been updated");
+            this.sendSms(smsRequest);
             return this.modelRepo.save(existingCustomer);
    }
 
@@ -95,6 +109,8 @@ public class CustomerController {
        Customer existingCustomer = this.modelRepo.findById(id)
            .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id :" + id));
            
+        SmsRequest smsRequest = new SmsRequest(existingCustomer.getPhoneNumber(), "You're sorry to inform you that, you're no more a client of Stanbic Bank");
+        this.sendSms(smsRequest);
        this.modelRepo.delete(existingCustomer);
     
        return new ResponseEntity<>("All informaton of Customer deleted succesfully", HttpStatus.OK);
@@ -115,5 +131,13 @@ public class CustomerController {
     return customer.getAccounts();
 
    }
+
+
+
+@Override
+public void sendSms(SmsRequest smsRequest) {
+        smsSender.sendSms(smsRequest);
+    
+}
 
 }
