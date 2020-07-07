@@ -24,7 +24,7 @@
 				
 
 ### link to API Collection on postman
-[link](https://www.getpostman.com/collections/bafddaa7707fb270d817)
+[link to postman collection for API](https://www.getpostman.com/collections/bafddaa7707fb270d817)
 
 
 - Twilio was used to notify a customer whenever an actions like add new account or update customer info is done.
