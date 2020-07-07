@@ -1,5 +1,7 @@
 package com.stanbic.customerapi.controller;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -24,43 +26,14 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @RequestMapping(value = "api/v1/accounts")
 @Api(value = "Account API", description = "Handles accounts operations")
-public class AccountController {
+public class AccountController  {
 
    @Autowired
    private AccountRepository modelRepo;
 
-  
 
    @Autowired
    private CustomerRepository customerRepo;
-
-//    get all accounts
-   // @GetMapping
-   // public List<Account> getAllAccounts() {
-        
-   //     return this.modelRepo.findAll();
-   // }
-
-
-   
-
-   // get account by id
-   // @GetMapping(value = "/{id}")
-   // public Account getAccountById(@PathVariable(name = "id") long id) {
-
-   //     return this.modelRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Account not found with id :" + id));
-
-   // }
-
-   // create account
-//    @PostMapping
-//    public Account createAccount(@Valid @RequestBody Account account) {
-
-//         Date date = new Date();
-//         long accnumber = date.getTime();
-//         account.setAccountNumber(accnumber); 
-//         return this.modelRepo.save(account);
-//    }
 
 
    //  6. 	Add a new account to an existing customer (3 points)
@@ -78,36 +51,20 @@ public class AccountController {
    }
    
 
-   // update account
-//    @PutMapping(value = "/{id}")
-//    public Account updateAccount(@Valid @RequestBody Account account, @PathVariable (name = "id") long id) {
-//        Account existingAccount = this.modelRepo.findById(id)
-//            .orElseThrow(() -> new ResourceNotFoundException("Account not found with id :" + id));
-
-//     existingAccount.setCurrentBalance(account.getCurrentBalance());
-//     existingAccount.setOpeningAmount(account.getOpeningAmount());
-//     this.modelRepo.save(existingAccount);
-
-//        return existingAccount;
-//    }
-
    // 8. 	Delete an account by account number (2 points)
    @DeleteMapping(value = "/{acc}")
    @ApiOperation(value = "Delete an account by account number")
-   public String deleteAccountWithNumber(@ApiParam(value = "account number") @PathVariable ("acc") long acc){
+   public Map<String,String> deleteAccountWithNumber(@ApiParam(value = "account number") @PathVariable ("acc") long acc){
 
        Account existingAccount = this.modelRepo.findByAccountNumber(acc);
-       this.modelRepo.delete(existingAccount);
-       return "Account has been deleted successfully";
-   }
 
-   // GET account by accountNumber   
-   // @GetMapping("/number/{accnumber}")
-   // public Account getAccountByAccNumber(@PathVariable (value = "accnumber") long accnumber) {
-   //    return this.modelRepo.findByAccountNumber(accnumber);
-      
-   // }
-   
+       this.modelRepo.delete(existingAccount);
+
+       Map<String,String> response = new HashMap<String, String>();
+       response.put("done", "Account Has Been Deleted");
+
+       return response;
+   }
 
 
 

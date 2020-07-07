@@ -1,6 +1,8 @@
 package com.stanbic.customerapi.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -12,8 +14,6 @@ import com.stanbic.customerapi.twilio.SmsRequest;
 import com.stanbic.customerapi.twilio.SmsSender;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,8 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.ApiResponse;
 
 @RestController
 @RequestMapping(value = "api/v1/customers")
@@ -44,12 +42,6 @@ public class CustomerController implements SmsSender {
    // 3. 	Retrieve all customers (5 points)
    @GetMapping
    @ApiOperation(value = "Retrieve all customers", response = List.class)
-   @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "Successfully retrieved list"),
-    @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-    @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
-    @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
-})
    public List<Customer> getAllCustomers() {
        return this.modelRepo.findAll();
    }
@@ -62,10 +54,9 @@ public class CustomerController implements SmsSender {
 
        Customer customer = this.modelRepo.findByEmail(value);
 
-       if(customer == null){
+       if(customer == null)
             customer = this.modelRepo.findByPhoneNumber(value);
-       }
-
+       
        return customer;
    }
 
@@ -104,7 +95,7 @@ public class CustomerController implements SmsSender {
    // 9. 	Delete a customer and all linked accounts. (3 points)
    @DeleteMapping("/{id}")
    @ApiOperation(value = "Delete a customer and all linked accounts")
-   public ResponseEntity<String> deleteCustomer(@ApiParam(value = "ID of customer to be deleted", required = true ) @PathVariable(name = "id") long id){
+   public Map<String,String> deleteCustomer(@ApiParam(value = "ID of customer to be deleted", required = true ) @PathVariable(name = "id") long id){
 
        Customer existingCustomer = this.modelRepo.findById(id)
            .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id :" + id));
@@ -113,7 +104,9 @@ public class CustomerController implements SmsSender {
         this.sendSms(smsRequest);
        this.modelRepo.delete(existingCustomer);
     
-       return new ResponseEntity<>("All informaton of Customer deleted succesfully", HttpStatus.OK);
+        Map<String,String> response = new HashMap<String, String>();
+        response.put("done", "Customer together with all accounts deleted");
+        return response;
      }
  
 
@@ -133,11 +126,10 @@ public class CustomerController implements SmsSender {
    }
 
 
-
+// 2. 	Add a workflow to notify the customer whenever an action like add new account or update customer info is done.
 @Override
 public void sendSms(SmsRequest smsRequest) {
         smsSender.sendSms(smsRequest);
-    
 }
 
 }
