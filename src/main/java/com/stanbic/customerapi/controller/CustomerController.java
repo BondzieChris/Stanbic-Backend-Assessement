@@ -51,7 +51,7 @@ public class CustomerController implements SmsSender {
    // 4. 	Retrieve a customer’s info by Email or phone number (3 points)
    @GetMapping("/info")
    @ApiOperation(value = "Retrieve a customer’s info by Email or phone number")
-   public Customer getCustomerEmail(@ApiParam(value = "Customer ID to retrieve Customer Information", required = true) @RequestParam(name = "value") String value) {
+   public Customer getCustomerEmail(@ApiParam(value = "Customer's Email or phone number", required = true) @RequestParam(name = "value") String value) {
 
     
        Customer customer = this.modelRepo.findByEmail(value);
@@ -69,7 +69,6 @@ public class CustomerController implements SmsSender {
    public Customer createCustomer( @ApiParam(value = "Customer object store in database table", required = true) @Valid @RequestBody Customer customer) {
 
 
-    // return "route has been hit";
     // SMS with twilio. Only verifies numbers will receivce SMS becuase the twilio account is free
        SmsRequest smsRequest = new SmsRequest(customer.getPhoneNumber(), "Congratulation!! You are now a client of Stanbic Bank");
        this.sendSms(smsRequest);
@@ -90,8 +89,8 @@ public class CustomerController implements SmsSender {
             existingCustomer.setEmail(customer.getEmail());
             existingCustomer.setPhoneNumber(customer.getPhoneNumber());
 
-            // SmsRequest smsRequest = new SmsRequest(existingCustomer.getPhoneNumber(), "You information at Stanbic has been updated");
-            // this.sendSms(smsRequest);
+            SmsRequest smsRequest = new SmsRequest(existingCustomer.getPhoneNumber(), "You information at Stanbic has been updated");
+            this.sendSms(smsRequest);
             return this.modelRepo.save(existingCustomer);
    }
 
